@@ -101,6 +101,14 @@ Program.prototype.setTrans = function (st0, sy0, st1, sy1, ac1)
     this.table[idx + 2] = ac1;
 }
 
+Program.prototype.getTrans = function (st0, sy0)
+{
+    var idx = (this.numStates * sy0 + st0) * 3;
+    return {state:  this.table[idx+0],
+            symbol: this.table[idx+1],
+            act:    this.table[idx+2]};
+}
+
 Program.prototype.reset = function ()
 {
     /// Start state
@@ -188,10 +196,11 @@ function generate(program)
         for (var state = 0; state < numStates; ++state)
         {
             var idx = numStates * symbol + state;
+            var next = program.getTrans(state, symbol);
             code += "        case "+idx+":\n";
-            code += "            state = "+table[3*idx+0]+";\n";
-            code += "            map[oldPos] = "+table[3*idx+1]+";\n";
-            switch (table[3*idx+2])
+            code += "            state = "+next.state+";\n";
+            code += "            map[oldPos] = "+next.symbol+";\n";
+            switch (next.act)
             {
             case ACTION_LEFT:
                 code += "            xPos += 1; if (xPos >= "+mapWidth+") xPos -= "+mapWidth+";\n";
