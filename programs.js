@@ -198,8 +198,10 @@ function generate(program)
             var idx = numStates * symbol + state;
             var next = program.getTrans(state, symbol);
             code += "        case "+idx+":\n";
-            code += "            state = "+next.state+";\n";
-            code += "            map[oldPos] = "+next.symbol+";\n";
+            if (next.state !== state)
+                code += "            state = "+next.state+";\n";
+            if (next.symbol !== symbol)
+                code += "            map[oldPos] = "+next.symbol+";\n";
             switch (next.act)
             {
             case ACTION_LEFT:
