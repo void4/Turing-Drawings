@@ -104,6 +104,7 @@ function randomProg()
         oldcanvas.id = ""
         oldcanvas.style.width = "128px"
         oldcanvas.style.height = "128px"
+        oldcanvas.style.float = "left"
         historyel.innerHtml = "<br>" + historyel.innerHtml
         historyel.insertBefore(oldcanvas, history.firstChild)
     }
