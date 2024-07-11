@@ -35,7 +35,9 @@
                     </canvas>
                 </div>
                 <div id="infodata"></div>
-                <div id="history"></div>
+                <div style="position: relative; height: 50%;">
+                    <div id="history" style="height: inherit; overflow-y: auto;"></div>
+                </div>
             </td>
         
             <!-- spacer column -->
@@ -71,6 +73,8 @@
                     you find a drawing you like, and would like to share it online, you can
                     do so by copying the custom URL shown in the text area below.
                     </div>
+
+                    <label for="autorestart">Autorestart <input type="checkbox" id="autorestart"></label>
 
                     <div style="margin-top:8px; margin-bottom:8px;">
                         <div>

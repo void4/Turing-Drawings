@@ -47,6 +47,7 @@ function init()
     canvas = document.getElementById("canvas");
     infodata = document.getElementById("infodata");
     historyel = document.getElementById("history");
+    autorestart = document.getElementById("autorestart");
 
     // Set the canvas size
     canvas.width = 512;
@@ -253,7 +254,8 @@ function updateRender()
     );
 
     var ent = entropy(program.map)
-    if (program.itrCount > 10000000 && (entchange < 0.01 || ent < 0.1 || ent > 0.9)) {
+
+    if (autorestart.checked && program.itrCount > 10000000 && (entchange < 0.01 || ent < 0.1 || ent > 0.9)) {
         randomProg()
     }
 
@@ -273,5 +275,6 @@ document.addEventListener("keydown", keyDownTextField, false);
 function keyDownTextField(e) {
     if (e.key == "r") {
         randomProg()
+        autorestart.checked = false
     }
 }
