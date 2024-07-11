@@ -45,6 +45,7 @@ function init()
 {
     // Get a reference to the canvas
     canvas = document.getElementById("canvas");
+    infodata = document.getElementById("infodata");
 
     // Set the canvas size
     canvas.width = 512;
@@ -98,9 +99,13 @@ function randomProg()
     console.log('num symbols: ' + numSymbols);
 
     program = new Program(numStates, numSymbols, canvas.width, canvas.height);
+    lastent = 0
+    entchange = 0
 
     // Set the sharing URL
     var str = program.toString();
+    console.log(str)
+
     var url = location.protocol + '//' + location.host + location.pathname;
     var shareURL = url + '#' + str;
     document.getElementById("shareURL").value = shareURL;
@@ -141,6 +146,26 @@ var colorMap = [
     0  ,255,255,
     255,0  ,255,
 ];
+
+function entropy(lst) {
+    var cnt = {}
+    for (var i=0;i<lst.length;i++) {
+        var v = lst[i]
+        if (!cnt.hasOwnProperty(v)) {
+            cnt[v] = 1
+        } else {
+            cnt[v] += 1
+        }
+    }
+
+    for (const [key, value] of Object.entries(cnt)) {
+        var prob = value/lst.length
+        cnt[key] = prob*Math.log(prob)/Math.log(2)
+    }
+
+    var result = -Object.values(cnt).reduce((a,b)=>a+b, 0)
+    return result
+}
 
 /***
 Time per update, in milliseconds
@@ -205,7 +230,26 @@ function updateRender()
         'invalid image data length'
     );
 
+    var ent = entropy(program.map)
+    if (program.itrCount > 10000000 && (entchange < 0.01 || ent < 0.1 || ent > 0.9)) {
+        randomProg()
+    }
+
+	var p = 0.01
+    entchange = entchange * (1-p) + Math.abs(lastent-ent) * p
+
+    infodata.innerText = ent + " " + program.itrCount + " " + entchange
+
+    lastent = ent
+
     // Show the image data
     canvas.ctx.putImageData(canvas.imgData, 0, 0);
 }
 
+document.addEventListener("keydown", keyDownTextField, false);
+
+function keyDownTextField(e) {
+    if (e.key == "r") {
+        randomProg()
+    }
+}
