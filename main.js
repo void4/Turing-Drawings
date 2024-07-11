@@ -46,6 +46,7 @@ function init()
     // Get a reference to the canvas
     canvas = document.getElementById("canvas");
     infodata = document.getElementById("infodata");
+    historyel = document.getElementById("history");
 
     // Set the canvas size
     canvas.width = 512;
@@ -82,11 +83,32 @@ function init()
 }
 window.addEventListener("load", init, false);
 
+firstrun = true
+
 /**
 Generate a new random program
 */
 function randomProg()
 {
+
+    if (!firstrun) {
+        var oldcanvas = canvas.cloneNode(true)
+        oldcanvas.ctx = oldcanvas.getContext("2d");
+        oldcanvas.ctx.putImageData(canvas.imgData, 0, 0);
+        oldcanvas.program = program.toString()
+        oldcanvas.addEventListener("mousedown", function(event) {
+            program = Program.fromString(event.target.program, canvas.width, canvas.height)
+            firstrun = true
+        }, false);
+        oldcanvas.id = ""
+        oldcanvas.style.width = "128px"
+        oldcanvas.style.height = "128px"
+        historyel.innerHtml = "<br>" + historyel.innerHtml
+        historyel.insertBefore(oldcanvas, history.firstChild)
+    }
+
+    firstrun = false
+
     var numStates = parseInt(document.getElementById("numStates").value);
     var numSymbols = parseInt(document.getElementById("numSymbols").value);
 
